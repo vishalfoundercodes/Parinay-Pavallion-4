@@ -23,8 +23,6 @@ import {
 
 import AuthModal from "./Pages/Auth/AuthModal";
 import Button from "./Pages/ReusableComponent/Button";
-import Card from "./Pages/ReusableComponent/Card";
-import SectionTitle from "./Pages/ReusableComponent/Section";
 import VenuesPage from "./Pages/Venue/VenuePage";
 import GalleryPage from "./Pages/Gallery/Gallery";
 import ContactPage from "./Pages/Contact/ContactPage";
@@ -32,6 +30,13 @@ import UserProfile from "./Pages/Profile/UserProfile";
 import Logo from "./Pages/ReusableComponent/Logo";
 import HomePage from "./Pages/Home/HomePage";
 import BookingSystem from "./Pages/ReusableComponent/BookingSystem";
+import RegisterModal from "./Pages/Auth/RegisterModal";
+import axios from "axios";
+import apis from "./utilities/api.js"
+import Loader from "./Pages/ReusableComponent/Loader"
+import Privacy from "./Pages/Privacy/Privacy.js";
+import Terms from "./Pages/Terms/Terms.js";
+import Cancelation from "./Pages/Cancel/Cancelation.js";
 
 interface User {
   name: string;
@@ -188,14 +193,6 @@ const DATA = {
   ],
 };
 
-/* --- SUB COMPONENTS --- */
-
-
-
-/* --- MAIN PAGES --- */
-
-
-
 /* --- APP COMPONENT --- */
 
 export default function App() {
@@ -203,10 +200,12 @@ export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // const [user, setUser] = useState(null); // Auth state
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  // const [selectedBookingItem, setSelectedBookingItem] = useState(null);
+ const [registerModalOpen, setRegisterModalOpen] = useState(false);
 const [user, setUser] = useState<User | null>(null);
 const [selectedBookingItem, setSelectedBookingItem] =
   useState<BookingItem | null>(null);
+    const [infoData,setInfoData]=useState(null)
+    const [loading, setLoading] = useState(false);
 
   const navItems = [
     { id: "home", label: "Home" },
@@ -217,18 +216,19 @@ const [selectedBookingItem, setSelectedBookingItem] =
     { id: "contact", label: "Contact" },
   ];
 
-  // const handleBookNow = (item) => {
-  //   setSelectedBookingItem(item);
-  //   setPage("booking");
-  //   window.scrollTo(0, 0);
-  // };
-
-  // const handleNavigate = (p) => {
-  //   setPage(p);
-  //   setMobileMenuOpen(false);
-  //   window.scrollTo(0, 0);
-  // };
-
+  const fetchContectInfo = async () => {
+    try {
+      setLoading(true);
+      console.log(apis.contact_info);
+      const res = await axios.get(apis.contact_info);
+      console.log("res contact info:", res);
+      setInfoData(res?.data?.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleBookNow = (item: BookingItem) => {
     setSelectedBookingItem(item);
     setPage("booking");
@@ -241,6 +241,12 @@ const [selectedBookingItem, setSelectedBookingItem] =
     window.scrollTo(0, 0);
   };
 
+
+  useEffect(()=>{
+    fetchContectInfo()
+  },[])
+
+  if(loading){return(<Loader/>)}
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans selection:bg-[#d4af37] selection:text-white">
       {/* HEADER */}
@@ -272,14 +278,14 @@ const [selectedBookingItem, setSelectedBookingItem] =
               {user ? (
                 <button
                   onClick={() => handleNavigate("profile")}
-                  className="flex items-center gap-2 bg-[#d4af37] text-[#0f3d2e] px-4 py-2 rounded-sm font-bold hover:bg-white transition"
+                  className="flex items-center gap-2 bg-[#d4af37] text-[#0f3d2e] px-4 py-2 rounded-2xl font-bold hover:bg-white transition"
                 >
                   <User size={18} /> Profile
                 </button>
               ) : (
                 <button
                   onClick={() => setAuthModalOpen(true)}
-                  className="flex items-center gap-2 border border-[#d4af37] text-[#d4af37] px-4 py-2 rounded-sm font-bold hover:bg-[#d4af37] hover:text-[#0f3d2e] transition"
+                  className="flex items-center gap-2 border border-[#d4af37] text-[#d4af37]  px-4 py-2 rounded-2xl font-bold hover:bg-[#d4af37] hover:text-[#0f3d2e] transition"
                 >
                   Login
                 </button>
@@ -338,7 +344,11 @@ const [selectedBookingItem, setSelectedBookingItem] =
       <main className="pt-20 min-h-screen">
         {page === "home" && <HomePage onNavigate={handleNavigate} />}
         {page === "lawns" && (
-          <VenuesPage type="lawns" data={DATA.lawns} onBook={handleBookNow} />
+          <VenuesPage
+            type="lawns"
+            //  data={DATA.lawns}
+            onBook={handleBookNow}
+          />
         )}
         {page === "halls" && (
           <VenuesPage type="halls" data={DATA.halls} onBook={handleBookNow} />
@@ -348,6 +358,10 @@ const [selectedBookingItem, setSelectedBookingItem] =
         )}
         {page === "gallery" && <GalleryPage />}
         {page === "contact" && <ContactPage />}
+        {page === "register" && <RegisterModal />}
+        {page === "privacy" && <Privacy />}
+        {page === "cancelation" && <Cancelation />}
+        {page === "terms" && <Terms />}
         {page === "booking" && (
           <BookingSystem
             selectedItem={selectedBookingItem}
@@ -359,6 +373,7 @@ const [selectedBookingItem, setSelectedBookingItem] =
           <UserProfile
             user={user}
             onLogout={() => {
+              localStorage.clear();
               setUser(null);
               setPage("home");
             }}
@@ -388,10 +403,22 @@ const [selectedBookingItem, setSelectedBookingItem] =
               luxury stays. Experience royalty with us.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-[#d4af37]">
+              <a
+                href="#"
+                className="hover:text-[#d4af37]"
+                onClick={() => {
+                  window.open(infoData?.social?.instagram, "_blank");
+                }}
+              >
                 <Instagram size={20} />
               </a>
-              <a href="#" className="hover:text-[#d4af37]">
+              <a
+                href="#"
+                className="hover:text-[#d4af37]"
+                onClick={() => {
+                  window.open(infoData?.social?.facebook, "_blank");
+                }}
+              >
                 <Facebook size={20} />
               </a>
               <a href="#" className="hover:text-[#d4af37]">
@@ -442,22 +469,38 @@ const [selectedBookingItem, setSelectedBookingItem] =
             <h4 className="text-white font-bold text-lg mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:text-[#d4af37]">
+                <a
+                  href="#"
+                  className="hover:text-[#d4af37]"
+                  onClick={() => handleNavigate("privacy")}
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#d4af37]">
+                <a
+                  href="#"
+                  className="hover:text-[#d4af37]"
+                  onClick={() => handleNavigate("terms")}
+                >
                   Terms & Conditions
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#d4af37]">
+                <a
+                  href="#"
+                  className="hover:text-[#d4af37]"
+                  onClick={() => handleNavigate("cancelation")}
+                >
                   Cancellation Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#d4af37]">
+                <a
+                  href="#"
+                  className="hover:text-[#d4af37]"
+                  onClick={() => handleNavigate("contact")}
+                >
                   Support
                 </a>
               </li>
@@ -469,17 +512,15 @@ const [selectedBookingItem, setSelectedBookingItem] =
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="shrink-0 text-[#d4af37]" size={18} />
-                <span>
-                  Parinay Pavallion Resort, Wedding Avenue, Lucknow, UP - 226010
-                </span>
+                <span>{infoData?.address}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="shrink-0 text-[#d4af37]" size={18} />
-                <span>+91 98765 43210</span>
+                <span>{infoData?.phone}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="shrink-0 text-[#d4af37]" size={18} />
-                <span>info@parinaypavallion.com</span>
+                <span>{infoData?.email}</span>
               </li>
             </ul>
           </div>
@@ -506,6 +547,18 @@ const [selectedBookingItem, setSelectedBookingItem] =
         onLogin={(userData) => {
           setUser(userData);
           setAuthModalOpen(false);
+        }}
+        onRegisterClick={() => {
+          setAuthModalOpen(false);
+          setRegisterModalOpen(true);
+        }}
+      />
+      <RegisterModal
+        isOpen={registerModalOpen}
+        onClose={() => setRegisterModalOpen(false)}
+        onLoginClick={() => {
+          setRegisterModalOpen(false);
+          setAuthModalOpen(true);
         }}
       />
     </div>

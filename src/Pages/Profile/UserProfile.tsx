@@ -11,7 +11,7 @@ interface UserProfileTool {
   onLogout?: () => void;
 }
 const UserProfile:React.FC<UserProfileTool> = ({ user, onLogout }) => (
-  <div className="py-24 px-4 max-w-5xl mx-auto animate-fade-in">
+  <div className="py-4 px-4 max-w-5xl mx-auto animate-fade-in">
     <div className="flex flex-col md:flex-row gap-8">
       {/* Sidebar */}
       <div className="md:w-1/4">

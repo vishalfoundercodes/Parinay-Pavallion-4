@@ -88,9 +88,15 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogin: (user: User) => void;
+  onRegisterClick: () => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
+const AuthModal: React.FC<AuthModalProps> = ({
+  isOpen,
+  onClose,
+  onLogin,
+  onRegisterClick,
+}) => {
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -104,19 +110,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     setLoading(true);
 
     try {
-        const payload={
-            mobile:mobile,
-            password:password
-        }
-        console.log("payload",payload)
-        console.log("apis.login", apis.login);
+      const payload = {
+        mobile: mobile,
+        password: password,
+      };
+      console.log("payload", payload);
+      console.log("apis.login", apis.login);
       const response = await axios.post(apis.login, payload);
-       console.log("res", response);
-        if(response?.data?.status===true){
-             console.log("res", response?.data?.user);
-             localStorage.setItem("userId", response?.data?.user?.id);
-        }
-     
+      console.log("res", response);
+      if (response?.data?.status === true) {
+        console.log("res", response?.data?.user);
+        localStorage.setItem("userId", response?.data?.user?.id);
+      }
+
       /**
        * Assume API response like:
        * {
@@ -135,7 +141,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     } catch (err: any) {
       console.error("Login error:", err);
       console.error("Login error:", err?.response?.data?.message);
-      toast.error(err?.response?.data?.message)
+      toast.error(err?.response?.data?.message);
       setError(err?.response?.data?.message || "Login failed. Try again.");
     } finally {
       setLoading(false);
@@ -188,7 +194,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>
             Don't have an account?{" "}
-            <a href="#" className="text-[#d4af37] font-bold hover:underline">
+            <a
+              href="#"
+              className="text-[#d4af37] font-bold hover:underline"
+              onClick={onRegisterClick}
+            >
               Register
             </a>
           </p>

@@ -39,9 +39,12 @@
 
 // export default VenuesPage;
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SectionTitle from "../ReusableComponent/Section";
 import Card from "../ReusableComponent/Card";
+import axios from "axios";
+import apis from "../../utilities/api.js"
+import Loader from "../ReusableComponent/Loader"
 
 interface CardItem {
   id: string | number;
@@ -60,9 +63,40 @@ interface VenuesPageProps {
   onBook: (item: CardItem) => void;
 }
 
-const VenuesPage: React.FC<VenuesPageProps> = ({ type, data, onBook }) => {
+const VenuesPage: React.FC<VenuesPageProps> = ({ type, onBook }) => {
+  const [data, setdata] = useState([])
+  const [loading,setLoading]=useState(false)
+const fetchVenueData = async () => {
+  try {
+    setLoading(true)
+    let url = "";
+
+    if (type === "lawns") {
+      url = apis.lawns_list;
+    } else if (type === "halls") {
+      url = apis.halls_list;
+    } else if (type === "rooms") {
+      url = apis.rooms_list;
+    }
+
+    if (!url) return;
+
+    const res = await axios.get(url);
+    console.log(`res ${type}:`, res?.data?.data);
+    setdata(res?.data?.data || []);
+  } catch (error) {
+    console.error(error);
+  }finally{
+    setLoading(false)
+  }
+};
+useEffect(() => {
+  fetchVenueData();
+}, [type]);
+
+if(loading){return(<Loader/>)}
   return (
-    <div className="py-24 px-4 max-w-7xl mx-auto animate-fade-in">
+    <div className="py-4 px-4 max-w-7xl mx-auto animate-fade-in">
       <SectionTitle
         title={
           type === "lawns"
