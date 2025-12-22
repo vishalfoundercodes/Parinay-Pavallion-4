@@ -21,6 +21,7 @@ const apis = {
   contact_info: `${configModalPavallion}contact/info`,
   send_message: `${configModalPavallion}contact/send-message`,
   booking_create: `${configModalPavallion}booking/create`,
+  my_bookings: `${configModalPavallion}/booking/my-bookings`,
 };
 
 export default apis;

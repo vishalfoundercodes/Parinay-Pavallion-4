@@ -4,6 +4,7 @@ import SectionTitle from './Section';
 import { Camera, CheckCircle, Coffee, Heart, Music } from 'lucide-react';
 import axios from 'axios';
 import apis from "../../utilities/api.js"
+import { toast } from 'react-toastify';
 
 interface BookingSystemProps {
   selectedItem?: {
@@ -157,6 +158,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
   selectedItem,
   user,
   onLoginRedirect,
+  onNavigate,
 }) => {
   const [step, setStep] = useState<number>(1);
   const [formData, setFormData] = useState({
@@ -164,18 +166,21 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
     timeSlot: "Day",
     guests: "",
     eventType: "Wedding",
-    venue: selectedItem ? selectedItem.name || selectedItem.type : "",
+    amount: "",
+    numberOfGuest: "",
+    // venue: selectedItem ? selectedItem.name || selectedItem.type : "",
+    venue: selectedItem?.id?.toString() || "",
+    // Ab directly ID store ho raha hai ✅
   });
   const [bookingId, setBookingId] = useState<string | null>(null);
-  const [availableVenues,setAvailableVenues]=useState([])
-  const [eventTypes,setEventTypes]=useState([])
+  const [availableVenues, setAvailableVenues] = useState([]);
+  const [eventTypes, setEventTypes] = useState([]);
 
   const handleSubmit = () => {
     if (!user) {
       onLoginRedirect();
       return;
     }
-    bookingCreate()
     // Simulate booking
     setTimeout(() => {
       const newId = "PP-" + Math.floor(100000 + Math.random() * 900000);
@@ -185,16 +190,16 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
     }, 1500);
   };
 
-  const fetchAvailabelVenues=async()=>{
+  const fetchAvailabelVenues = async () => {
     try {
       // console.log("apis:", apis.availability_venues);
       const res = await axios.get(apis.availability_venues);
       // console.log("res:",res?.data?.data)
       setAvailableVenues(res?.data?.data);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
   const fetcheventTypes = async () => {
     try {
       // console.log("apis:", apis.availability_venues);
@@ -208,45 +213,64 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
 
   const handleAvailability = async () => {
     try {
-      console.log("property id:",formData.venue );
-      console.log("date:", formData.eventType);
-      console.log("time slot:", formData.timeSlot);
-      console.log("date:", formData.date);
+      // console.log("property id:",formData.venue );
+      // console.log("date:", formData.eventType);
+      // console.log("time slot:", formData.timeSlot);
+      // console.log("date:", formData.date);
       // check?property_id=1&date=2025-02-10&time_slot=Day
       const res = await axios.get(
         `${apis.check_availability}${formData.venue}&date=${formData.date}&time_slot=${formData.timeSlot}`
       );
       console.log("res:", res?.data);
       // setEventTypes(res?.data?.data);
-      if(res?.data?.status===true){
-          handleSubmit();
+      if (res?.data?.status === true) {
+        await bookingCreate();
+      } else if (res?.data?.status === false) {
+        toast.warn(res?.data?.message);
+        return;
       }
-    
     } catch (error) {
       console.error(error);
     }
   };
 
-  const bookingCreate=async()=>{
+  const bookingCreate = async () => {
     try {
       const payload = {
-        property_id: 1,
+        property_id: formData.venue,
         booking_date: formData.date,
         time_slot: formData.timeSlot,
-        guest_count: 900,
+        guest_count: formData.numberOfGuest,
+        booking_amount: formData.amount,
       };
-      console.log(payload)
-      const res = await axios.post(apis.booking_create,payload);
-      console.log(res)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+      // console.log("venue",formData.venue)
+      console.log(payload);
+      const token = localStorage.getItem("token");
+      // console.log("token", token);
 
-  useEffect(()=>{
-    fetchAvailabelVenues()
-    fetcheventTypes()
-  },[])
+      const res = await axios.post(apis.booking_create, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res?.data);
+      if (res?.data?.status === true) {
+        toast.success(res?.data?.message);
+        handleSubmit();
+      } else if (res?.data?.status === false) {
+        toast.warn(res?.data?.message);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvailabelVenues();
+    fetcheventTypes();
+  }, []);
 
   const groupedVenues = availableVenues.reduce((acc, item) => {
     if (!acc[item.type]) {
@@ -255,7 +279,6 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
     acc[item.type].push(item);
     return acc;
   }, {});
-
 
   if (step === 3) {
     return (
@@ -277,7 +300,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
               {bookingId}
             </p>
           </div>
-          <Button onClick={() => setStep(1)}>Back to Home</Button>
+          <Button onClick={() => onNavigate("home")}>Back to Home</Button>
         </div>
       </div>
     );
@@ -391,6 +414,36 @@ const BookingSystem: React.FC<BookingSystemProps> = ({
                   Night (6PM - 12AM)
                 </button>
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Amount (₹)
+              </label>
+              <input
+                type="number"
+                placeholder="Enter amount"
+                className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+                value={formData.amount}
+                onChange={(e) =>
+                  setFormData({ ...formData, amount: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Number of Guests
+              </label>
+              <input
+                type="number"
+                placeholder="Enter number of guests"
+                className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+                value={formData.numberOfGuest}
+                onChange={(e) =>
+                  setFormData({ ...formData, numberOfGuest: e.target.value })
+                }
+                required
+              />
             </div>
           </div>
 

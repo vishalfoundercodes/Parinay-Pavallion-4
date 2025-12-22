@@ -63,38 +63,98 @@ interface VenuesPageProps {
   onBook: (item: CardItem) => void;
 }
 
+// const VenuesPage: React.FC<VenuesPageProps> = ({ type, onBook }) => {
+//   const [data, setdata] = useState([])
+//   const [loading,setLoading]=useState(false)
+// const fetchVenueData = async () => {
+//   try {
+//     setLoading(true)
+//     let url = "";
+
+//     if (type === "lawns") {
+//       url = apis.lawns_list;
+//     } else if (type === "halls") {
+//       url = apis.halls_list;
+//     } else if (type === "rooms") {
+//       url = apis.rooms_list;
+//     }
+
+//     if (!url) return;
+
+//     const res = await axios.get(url);
+//     console.log(`res ${type}:`, res?.data?.data);
+//     setdata(res?.data?.data || []);
+//   } catch (error) {
+//     console.error(error);
+//   }finally{
+//     setLoading(false)
+//   }
+// };
+// useEffect(() => {
+//   fetchVenueData();
+// }, [type]);
+
+// if(loading){return(<Loader/>)}
+//   return (
+//     <div className="py-4 px-4 max-w-7xl mx-auto animate-fade-in">
+//       <SectionTitle
+//         title={
+//           type === "lawns"
+//             ? "Our Wedding Lawns"
+//             : type === "halls"
+//             ? "Banquet Halls"
+//             : "Luxury Rooms"
+//         }
+//         subtitle="Explore Options"
+//       />
+
+//       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+//         {data.map((item) => (
+//           <Card key={item.id} item={item} type={type} onBook={()=>onBook} />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default VenuesPage;
+
+
 const VenuesPage: React.FC<VenuesPageProps> = ({ type, onBook }) => {
   const [data, setdata] = useState([])
-  const [loading,setLoading]=useState(false)
-const fetchVenueData = async () => {
-  try {
-    setLoading(true)
-    let url = "";
+  const [loading, setLoading] = useState(false)
 
-    if (type === "lawns") {
-      url = apis.lawns_list;
-    } else if (type === "halls") {
-      url = apis.halls_list;
-    } else if (type === "rooms") {
-      url = apis.rooms_list;
+  const fetchVenueData = async () => {
+    try {
+      setLoading(true)
+      let url = "";
+
+      if (type === "lawns") {
+        url = apis.lawns_list;
+      } else if (type === "halls") {
+        url = apis.halls_list;
+      } else if (type === "rooms") {
+        url = apis.rooms_list;
+      }
+
+      if (!url) return;
+
+      const res = await axios.get(url);
+      console.log(`res ${type}:`, res?.data?.data);
+      setdata(res?.data?.data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false)
     }
+  };
 
-    if (!url) return;
+  useEffect(() => {
+    fetchVenueData();
+  }, [type]);
 
-    const res = await axios.get(url);
-    console.log(`res ${type}:`, res?.data?.data);
-    setdata(res?.data?.data || []);
-  } catch (error) {
-    console.error(error);
-  }finally{
-    setLoading(false)
-  }
-};
-useEffect(() => {
-  fetchVenueData();
-}, [type]);
+  if (loading) { return (<Loader />) }
 
-if(loading){return(<Loader/>)}
   return (
     <div className="py-4 px-4 max-w-7xl mx-auto animate-fade-in">
       <SectionTitle
@@ -110,7 +170,12 @@ if(loading){return(<Loader/>)}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {data.map((item) => (
-          <Card key={item.id} item={item} type={type} onBook={()=>onBook} />
+          <Card 
+            key={item.id} 
+            item={item} 
+            type={type} 
+            onBook={onBook}  
+          />
         ))}
       </div>
     </div>

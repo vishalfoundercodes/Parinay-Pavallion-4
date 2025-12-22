@@ -121,6 +121,10 @@ const AuthModal: React.FC<AuthModalProps> = ({
       if (response?.data?.status === true) {
         console.log("res", response?.data?.user);
         localStorage.setItem("userId", response?.data?.user?.id);
+          localStorage.setItem("mobile", response?.data?.user?.mobile);
+          localStorage.setItem("email", response?.data?.user?.email);
+          localStorage.setItem("name", response?.data?.user?.name);
+          localStorage.setItem("token", response?.data?.token);
       }
 
       /**

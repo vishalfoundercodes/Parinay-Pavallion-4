@@ -10,12 +10,14 @@ interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginClick: () => void; // New prop
+  onRegisterSuccess: (user: { name: string; email: string }) => void;
 }
 
 const RegisterModal: React.FC<RegisterModalProps> = ({
   isOpen,
   onClose,
   onLoginClick,
+  onRegisterSuccess,
 }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -41,24 +43,35 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
       const res = await axios.post(apis.register, formData);
 
       if (res?.data?.status === true) {
-        console.log(res?.data)
-        toast.success(res?.data?.message || "Registration successful. Please login.");
+        console.log(res?.data);
+        toast.success(
+          res?.data?.message || "Registration successful. Please login."
+        );
         setFormData({
           name: "",
           mobile: "",
           email: "",
           password: "",
         });
-        localStorage.setItem("userId",res?.data?.data?.id)
-        localStorage.setItem("mobile",res?.data?.data?.mobile)
-        localStorage.setItem("email",res?.data?.data?.email)
-        onLoginClick(); // Open login modal
+        localStorage.setItem("userId", res?.data?.user?.id);
+        localStorage.setItem("mobile", res?.data?.user?.mobile);
+        localStorage.setItem("email", res?.data?.user?.email);
+        localStorage.setItem("name", res?.data?.user?.name);
+        localStorage.setItem("token", res?.data?.token);
+
+        const userData = {
+          name: res?.data?.data?.name,
+          email: res?.data?.data?.email,
+        };
+        // onLoginClick(); // Open login modal
+        onClose(); // register modal close
+        onRegisterSuccess(userData); // home open
       } else {
         toast.error(res?.data?.message || "Registration failed");
       }
     } catch (err: any) {
       console.error("Register error:", err);
-      toast.error(err?.response?.data?.message || "Something went wrong");
+      // toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

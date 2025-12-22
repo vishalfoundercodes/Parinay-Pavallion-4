@@ -19,7 +19,7 @@ interface PropertiesCounts {
 }
 
 
-const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
+const HomePage: React.FC<HomePageProps> = ({ onNavigate, onBook }) => {
     const [serviceData, setServiceData] = useState([])
     const [banner,setBanner]=useState([])
     const [featuries, setFeaturies] = useState([]);
@@ -43,7 +43,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         try {
           setLoading(true)
             const res = await axios.get(apis.slider_list)
-                // console.log("res",res?.data)
+                console.log("res",res?.data)
                 setBanner(res?.data?.data);
 
         } catch (error) {
@@ -68,7 +68,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         try {
           setLoading(true)
           const res = await axios.get(apis.featured_venue);
-          console.log("res", res?.data);
+          // console.log("res", res?.data);
           setFeaturies(res?.data?.data);
         } catch (error) {
           console.error(error);
@@ -128,14 +128,14 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               Welcome to Parinay Pavallion
             </h3>
             <h2 className="text-4xl font-serif text-[#0f3d2e] font-bold mb-6">
-              Where Dreams Come True
+              Where Nature Meets Luxury
             </h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              Located in the heart of serenity, Parinay Pavallion is more than
-              just a venue; it's a destination where memories are crafted. With
-              4 sprawling lawns, 2 air-conditioned banquet halls, and luxurious
-              accommodation, we ensure your special day is nothing short of
-              perfection.
+              Founded in 2025 by Shalendar and Rashmi, Parinay Pavallion Resort
+              is a serene retreat spread across 6 lush acres in Kalpipara,
+              Bahraich. Nestled amidst greenery and tranquility, the resort is a
+              sanctuary for those seeking rejuvenation, celebration, or simply a
+              peaceful escape into nature.
             </p>
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="border-l-4 border-[#d4af37] pl-4">
@@ -204,7 +204,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 key={item.id}
                 item={item}
                 type="lawn"
-                onBook={() => onNavigate("booking")}
+                onBook={() => {
+                  console.log("handle booking home:", item), onBook(item);
+                }}
               />
             ))}
           </div>

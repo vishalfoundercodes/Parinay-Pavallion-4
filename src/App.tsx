@@ -196,12 +196,16 @@ const DATA = {
 /* --- APP COMPONENT --- */
 
 export default function App() {
-  const [page, setPage] = useState("home");
+ const [page, setPage] = useState(() => {
+   return localStorage.getItem("currentPage") || "home";
+ });
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // const [user, setUser] = useState(null); // Auth state
   const [authModalOpen, setAuthModalOpen] = useState(false);
  const [registerModalOpen, setRegisterModalOpen] = useState(false);
 const [user, setUser] = useState<User | null>(null);
+ const [showRegister, setShowRegister] = useState(false);
 const [selectedBookingItem, setSelectedBookingItem] =
   useState<BookingItem | null>(null);
     const [infoData,setInfoData]=useState(null)
@@ -230,6 +234,7 @@ const [selectedBookingItem, setSelectedBookingItem] =
     }
   };
   const handleBookNow = (item: BookingItem) => {
+    console.log("handle booking:",item)
     setSelectedBookingItem(item);
     setPage("booking");
     window.scrollTo(0, 0);
@@ -237,6 +242,7 @@ const [selectedBookingItem, setSelectedBookingItem] =
 
   const handleNavigate = (p: string) => {
     setPage(p);
+    localStorage.setItem("currentPage", p);
     setMobileMenuOpen(false);
     window.scrollTo(0, 0);
   };
@@ -245,6 +251,15 @@ const [selectedBookingItem, setSelectedBookingItem] =
   useEffect(()=>{
     fetchContectInfo()
   },[])
+
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const name = localStorage.getItem("name");
+    if (email) {
+      setUser({ name, email });
+    }
+  }, []);
+
 
   if(loading){return(<Loader/>)}
   return (
@@ -342,7 +357,9 @@ const [selectedBookingItem, setSelectedBookingItem] =
 
       {/* MAIN CONTENT */}
       <main className="pt-20 min-h-screen">
-        {page === "home" && <HomePage onNavigate={handleNavigate} />}
+        {page === "home" && (
+          <HomePage onNavigate={handleNavigate} onBook={handleBookNow} />
+        )}
         {page === "lawns" && (
           <VenuesPage
             type="lawns"
@@ -367,6 +384,7 @@ const [selectedBookingItem, setSelectedBookingItem] =
             selectedItem={selectedBookingItem}
             user={user}
             onLoginRedirect={() => setAuthModalOpen(true)}
+            onNavigate={handleNavigate}
           />
         )}
         {page === "profile" && user && (
@@ -547,6 +565,7 @@ const [selectedBookingItem, setSelectedBookingItem] =
         onLogin={(userData) => {
           setUser(userData);
           setAuthModalOpen(false);
+          onNavigate("home");
         }}
         onRegisterClick={() => {
           setAuthModalOpen(false);
@@ -559,6 +578,11 @@ const [selectedBookingItem, setSelectedBookingItem] =
         onLoginClick={() => {
           setRegisterModalOpen(false);
           setAuthModalOpen(true);
+        }}
+        onRegisterSuccess={(userData) => {
+          setUser(userData); // ✅ SAME AS LOGIN
+          setRegisterModalOpen(false);
+          onNavigate("home"); // ✅ register success → home
         }}
       />
     </div>
