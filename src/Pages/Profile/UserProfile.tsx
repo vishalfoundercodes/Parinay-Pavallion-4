@@ -54,11 +54,11 @@ const UserProfile:React.FC<UserProfileTool> = ({ user, onLogout }) => {
               <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
                 <User className="w-full h-full p-4 text-gray-400" />
               </div>
-              <h3 className="font-bold text-lg text-[#0f3d2e]">{user.name}</h3>
+              <h3 className="font-bold text-lg text-primary">{user.name}</h3>
               <p className="text-gray-500 text-sm">{user.email}</p>
             </div>
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <button className="w-full text-left px-6 py-4 border-b hover:bg-gray-50 font-medium text-[#0f3d2e] border-l-4 border-[#0f3d2e]">
+              <button className="w-full text-left px-6 py-4 border-b hover:bg-gray-50 font-medium text-primary border-l-4 border-primary">
                 My Profile
               </button>
               <button className="w-full text-left px-6 py-4 border-b hover:bg-gray-50 font-medium text-gray-600">
@@ -80,7 +80,7 @@ const UserProfile:React.FC<UserProfileTool> = ({ user, onLogout }) => {
           {/* Content */}
           <div className="md:w-3/4 space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="font-bold text-xl text-[#0f3d2e] mb-6 border-b pb-2">
+              <h3 className="font-bold text-xl text-primary mb-6 border-b pb-2">
                 Recent Bookings
               </h3>
 
@@ -122,12 +122,12 @@ const UserProfile:React.FC<UserProfileTool> = ({ user, onLogout }) => {
                       )}
 
                       {/* {booking.booking_status === "confirmed" && (
-                        <button className="text-[#0f3d2e] font-bold hover:underline">
+                        <button className="text-primary font-bold hover:underline">
                           Download Invoice
                         </button>
                       )} */}
 
-                      <button className="text-[#0f3d2e] font-bold hover:underline">
+                      <button className="text-primary font-bold hover:underline">
                         TOtal paid amount: ₹{booking.total_amount}
                       </button>
                     </div>

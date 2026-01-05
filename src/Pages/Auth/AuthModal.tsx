@@ -29,7 +29,7 @@
 //         </button>
 
 //         <div className="text-center mb-8">
-//           <h2 className="text-2xl font-serif font-bold text-[#0f3d2e]">
+//           <h2 className="text-2xl font-serif font-bold text-primary">
 //             Welcome Back
 //           </h2>
 //           <p className="text-gray-500">Sign in to manage your bookings</p>
@@ -45,13 +45,13 @@
 //           <input
 //             type="email"
 //             placeholder="Email Address"
-//             className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+//             className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
 //             required
 //           />
 //           <input
 //             type="password"
 //             placeholder="Password"
-//             className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+//             className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
 //             required
 //           />
 //           <Button className="w-full">Login</Button>
@@ -60,7 +60,7 @@
 //         <div className="mt-6 text-center text-sm text-gray-500">
 //           <p>
 //             Don't have an account?{" "}
-//             <a href="#" className="text-[#d4af37] font-bold hover:underline">
+//             <a href="#" className="text-secondary font-bold hover:underline">
 //               Register
 //             </a>
 //           </p>
@@ -163,7 +163,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
         </button>
 
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-serif font-bold text-[#0f3d2e]">
+          <h2 className="text-2xl font-serif font-bold text-primary">
             Welcome Back
           </h2>
           <p className="text-gray-500">Sign in to manage your bookings</p>
@@ -175,7 +175,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
             placeholder="Mobile Number"
             value={mobile}
             onChange={(e) => setMobile(e.target.value)}
-            className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+            className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
             required
           />
 
@@ -184,7 +184,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+            className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
             required
           />
 
@@ -200,7 +200,7 @@ const AuthModal: React.FC<AuthModalProps> = ({
             Don't have an account?{" "}
             <a
               href="#"
-              className="text-[#d4af37] font-bold hover:underline"
+              className="text-secondary font-bold hover:underline"
               onClick={onRegisterClick}
             >
               Register

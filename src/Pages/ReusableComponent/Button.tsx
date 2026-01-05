@@ -20,10 +20,10 @@ const Button: React.FC<ButtonProps> = ({
   const baseStyle =
     "px-6 py-3 rounded-sm font-medium transition-all duration-300 transform hover:-translate-y-1";
   const variants = {
-    primary: "bg-[#d4af37] text-[#0f3d2e] hover:bg-[#c4a030] shadow-lg",
+    primary: "bg-secondary text-primary hover:bg-[#c4a030] shadow-lg",
     outline:
-      "border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-[#0f3d2e]",
-    dark: "bg-[#0f3d2e] text-white hover:bg-[#16523e]",
+      "border-2 border-secondary text-secondary hover:bg-secondary hover:text-primary",
+    dark: "bg-primary text-white hover:bg-[#16523e]",
   };
   return (
     <button

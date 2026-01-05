@@ -71,7 +71,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
       }
     } catch (err: any) {
       console.error("Register error:", err);
-      // toast.error(err?.response?.data?.message || "Something went wrong");
+      toast.error(err?.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -88,7 +88,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         </button>
 
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-serif font-bold text-[#0f3d2e]">
+          <h2 className="text-2xl font-serif font-bold text-primary">
             Create Account
           </h2>
           <p className="text-gray-500">Register to book your venue</p>
@@ -101,7 +101,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+            className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
             required
           />
 
@@ -111,7 +111,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             placeholder="Mobile Number"
             value={formData.mobile}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+            className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
             required
           />
 
@@ -121,7 +121,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+            className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
             required
           />
 
@@ -131,7 +131,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded focus:border-[#0f3d2e] focus:outline-none"
+            className="w-full px-4 py-3 border rounded focus:border-primary focus:outline-none"
             required
           />
 
@@ -145,7 +145,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             Already have an account?{" "}
             <span
               onClick={onLoginClick}
-              className="text-[#d4af37] font-bold cursor-pointer hover:underline"
+              className="text-secondary font-bold cursor-pointer hover:underline"
             >
               Login
             </span>
