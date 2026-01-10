@@ -3,7 +3,7 @@ import Button from '../ReusableComponent/Button';
 import Card from '../ReusableComponent/Card';
 import SectionTitle from '../ReusableComponent/Section';
 import { ArrowRight, Camera, Coffee, Heart, Music } from 'lucide-react';
-import logo from "../../assets/logo2.png";
+import logo from "../../assets/favicon.png";
 import axios from 'axios';
 import apis from "../../utilities/api.js";
 import { toast } from "react-toastify";

@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from "../../assets/logo2.png";
+import logo from "../../assets/favicon.png";
 const Logo = () => (
   <div className="flex items-center gap-2">
     <div className="w-10 h-10 rounded-full flex items-center justify-center text-primary font-bold text-xl">
